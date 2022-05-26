@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="text2gif:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/text2gif_jar</output-path>
+    <root id="archive" name="text2gif.jar">
+      <element id="module-output" name="text2gif" />
+    </root>
+  </artifact>
+</component>
