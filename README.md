@@ -1,0 +1,1 @@
+text2gif is a simple application to convert text to GIF image.

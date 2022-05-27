@@ -1,6 +1,10 @@
 package text2gif;
 
 import com.sun.istack.internal.NotNull;
+import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
+import text2gif.annotations.NotNegative;
+import text2gif.annotations.Positive;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -16,15 +20,23 @@ public class TextUtil {
 
     /**
      * Creates array of letter images from String object.
-     * @param string String, which will be converted to images.
-     * @return Array of images, created from String
+     * @param string string, which will be converted to images
+     * @return array of images, created from String
      * @author Leonid Pilyugin (l.pilyugin04@gmail.com)
      */
     public static BufferedImage[] getImagesFromString(@NotNull String string) {
+        return getImagesFromArray(string.toCharArray());
+    }
+
+    /**
+     * Creates array of letter images from char array.
+     * @param array char array, which will be converted to images
+     * @return array of images, created from String
+     * @author Leonid Pilyugin (l.pilyugin04@gmail.com)
+     */
+    public static BufferedImage[] getImagesFromArray(@NotNull char[] array) {
         // Result array
-        BufferedImage[] result = new BufferedImage[string.length()];
-        // Array of chars from string
-        char[] array = string.toCharArray();
+        BufferedImage[] result = new BufferedImage[array.length];
         // Create image of every char
         for (int i = 0; i < array.length; i++) {
             result[i] = paintString(array[i]);
@@ -34,9 +46,33 @@ public class TextUtil {
     }
 
     /**
+     * Creates array of letter images from char array.
+     * @param array char array, which will be converted to images
+     * @param offset initial offset
+     * @param count length
+     * @return array of images, created from String
+     * @author Leonid Pilyugin (l.pilyugin04@gmail.com)
+     */
+    public static BufferedImage[] getImagesFromArray(@NotNull char[] array, @NotNegative int offset,
+                                                     @Positive int count) throws ValueException {
+        // Check values
+        if (offset + count > array.length) {
+            throw new ValueException("offset + count must be less or equal to array.length");
+        }
+        // Result array
+        BufferedImage[] result = new BufferedImage[count];
+        // Create image of every char
+        for (int i = 0; i < count; i++) {
+            result[i] = paintString(array[i + offset]);
+        }
+        // Return result
+        return result;
+    }
+
+    /**
      * Creates BufferedImage of char.
-     * @param ch Char to paint.
-     * @return Image of char.
+     * @param ch char to paint
+     * @return image of char
      * @author Leonid Pilyugin (l.pilyugin04@gmail.com)
      */
     private static BufferedImage paintString(char ch) {

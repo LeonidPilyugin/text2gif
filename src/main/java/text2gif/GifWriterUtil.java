@@ -1,6 +1,7 @@
 package text2gif;
 
 import com.sun.istack.internal.NotNull;
+import sun.awt.image.BufferedImageDevice;
 
 import javax.imageio.IIOException;
 import javax.imageio.stream.FileImageOutputStream;
@@ -19,6 +20,8 @@ import java.nio.file.Files;
  * @author Leonid Pilyugin (l.pilyugin04@gmail.com)
  */
 public class GifWriterUtil {
+    private static final int BUFFER_SIZE = 1024;
+
     /**
      * Converts text from text file to GIF image
      * @param inputFileName path to input text file (encoding is utf-8)
@@ -75,19 +78,20 @@ public class GifWriterUtil {
      * @author Leonid Pilyugin (l.pilyugin04@gmail.com)
      */
     private static void processAll(BufferedReader reader, GifSequenceWriter writer) throws IOException {
-        // Line for converting
-        String line;
-        // Images for line
+        // Reading buffer
+        char[] buffer = new char[BUFFER_SIZE];
+        // Images to write
         BufferedImage[] images;
-        // For each line convert it to images
-        // TODO: do smth with new line (it is ignoring)
-        while ((line = reader.readLine()) != null) {
+        // Read first chunk
+        int read = reader.read(buffer, 0, BUFFER_SIZE);
+        do {
             // Convert line to images array
-            images = TextUtil.getImagesFromString(line);
+            images = TextUtil.getImagesFromString(new String(buffer, 0, read));
             // Add images to output
             for (BufferedImage image : images) {
                 writer.writeToSequence(image);
             }
-        }
+        // Read new chunk
+        } while((read = reader.read(buffer, 0, BUFFER_SIZE)) == BUFFER_SIZE);
     }
 }
